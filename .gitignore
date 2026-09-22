@@ -1,0 +1,37 @@
+# ===== 依赖 =====
+node_modules/
+server/node_modules/
+
+# ===== 构建产物 =====
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ===== 环境变量与密钥（绝不上传） =====
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+
+# ===== 本地运行数据 =====
+server/data/
+*.db
+*.db-wal
+*.db-shm
+
+# ===== 系统/编辑器 =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ===== v0 运行时（如有） =====
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts

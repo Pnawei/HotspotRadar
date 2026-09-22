@@ -26,22 +26,40 @@
 
 ## 🖼️ 界面预览
 
-### 热点列表（带译文）
+### 首页 · 实时热搜榜
 
 <p align="center">
-  <img src="./docs/screenshots/translation-list.png" alt="热点列表" width="90%" style="border-radius:8px;border:1px solid #eee" />
+  <img src="./docs/screenshots/home.png" alt="首页" width="90%" style="border-radius:8px;border:1px solid #eee" />
 </p>
 
 ### 平台运行状态
 
 <p align="center">
-  <img src="./docs/screenshots/platforms.png" alt="平台状态" width="90%" style="border-radius:8px;border:1px solid #eee" />
+  <img src="./docs/screenshots/platforms-full.png" alt="平台状态" width="90%" style="border-radius:8px;border:1px solid #eee" />
 </p>
 
-### 详情页（AI 解读 + 中文译文）
+### 热度趋势风向
 
 <p align="center">
-  <img src="./docs/screenshots/translation-detail.png" alt="详情页" width="90%" style="border-radius:8px;border:1px solid #eee" />
+  <img src="./docs/screenshots/trend-full.png" alt="趋势页" width="90%" style="border-radius:8px;border:1px solid #eee" />
+</p>
+
+### 热点详情（AI 解读 + 中文译文）
+
+<p align="center">
+  <img src="./docs/screenshots/detail-full.png" alt="详情页" width="90%" style="border-radius:8px;border:1px solid #eee" />
+</p>
+
+### 内容合规与版权声明
+
+<p align="center">
+  <img src="./docs/screenshots/compliance-full.png" alt="合规页" width="90%" style="border-radius:8px;border:1px solid #eee" />
+</p>
+
+### 非中文标题自动译文
+
+<p align="center">
+  <img src="./docs/screenshots/translation-list.png" alt="译文示例" width="90%" style="border-radius:8px;border:1px solid #eee" />
 </p>
 
 ## 🌐 支持平台

@@ -36,19 +36,3 @@ export async function proxyFetch(url: string, init: ProxyRequestInit = {}): Prom
     dispatcher: getAgent(),
   }) as unknown as Promise<Response>;
 }
-
-// 快速检测代理是否可用（启动时不强制，失败平台自动降级为离线）
-export async function checkProxy(): Promise<boolean> {
-  if (!config.proxyUrl) return false;
-  try {
-    const r = await proxyFetch('https://api.github.com/zen', {
-      method: 'GET',
-      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'HotRadar/1.0' },
-      bodyTimeout: 5000,
-      headersTimeout: 5000,
-    });
-    return r.ok;
-  } catch {
-    return false;
-  }
-}

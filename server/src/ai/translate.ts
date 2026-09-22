@@ -5,13 +5,9 @@ import { createHash } from 'node:crypto';
 import { callDeepSeek } from './deepseek.js';
 import { getTranslation, setTranslation } from '../db/database.js';
 
+const HAS_LATIN = /[a-zA-Z]/;
 const HAS_CHINESE = /[\u4e00-\u9fff\u3400-\u4dbf]/;
 const HAS_WHITESPACE = /\s/;
-
-/** 判断文本是否包含中文字符（包含即视为中文，无需翻译） */
-export function isChineseText(text: string): boolean {
-  return HAS_CHINESE.test(text);
-}
 
 /** 归一化：小写 + 去除空白与常见标点，用于比较译文是否实质等于原文 */
 function normalize(text: string): string {
@@ -32,9 +28,11 @@ function hash(text: string): string {
 export async function translateToZh(text: string): Promise<string | null> {
   const trimmed = text.trim();
   if (!trimmed) return null;
-  if (isChineseText(trimmed)) return null;
-  // 无空格的纯 ASCII（仓库名、ID、短标识符）不翻译
-  if (!HAS_WHITESPACE.test(trimmed)) return null;
+  // 不含拉丁字母（纯中文/纯数字/纯符号）无需翻译
+  if (!HAS_LATIN.test(trimmed)) return null;
+  // 纯外文且无空格（仓库名 owner/repo、ID 等标识符）不翻译；
+  // 中英混合标题即使无空格也需翻译其中的外文部分
+  if (!HAS_CHINESE.test(trimmed) && !HAS_WHITESPACE.test(trimmed)) return null;
 
   const key = hash(trimmed);
   const cached = getTranslation(key);
@@ -73,9 +71,10 @@ export async function translateMany(texts: string[]): Promise<Array<string | nul
 
   texts.forEach((text, idx) => {
     const trimmed = (text || '').trim();
-    if (trimmed && !isChineseText(trimmed)) {
-      needTranslate.push({ idx, text: trimmed });
-    }
+    if (!trimmed || !HAS_LATIN.test(trimmed)) return;
+    // 纯外文无空格（标识符）跳过；中英混合或有空格的外文需翻译
+    if (!HAS_CHINESE.test(trimmed) && !HAS_WHITESPACE.test(trimmed)) return;
+    needTranslate.push({ idx, text: trimmed });
   });
 
   if (needTranslate.length === 0) return results;

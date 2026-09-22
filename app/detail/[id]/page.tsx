@@ -68,10 +68,10 @@ const fetcher = async (url: string): Promise<HotEventDetail | null> => {
     first_seen_at: data.createdAt,
     updated_at: data.updatedAt,
     sources: (data.sources || []).map(
-      (s: { platform: string; platformName: string; url: string; hotValue: number }) =>
+      (s: { platform: string; platformName: string; title: string | null; url: string; hotValue: number }) =>
         ({
           platform: s.platformName,
-          raw_title: data.title,
+          raw_title: s.title || data.title,
           raw_rank: 1,
           raw_heat: s.hotValue.toString(),
           source_url: s.url,

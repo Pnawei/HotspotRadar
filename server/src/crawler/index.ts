@@ -41,6 +41,7 @@ export interface HotItem {
     platform: string;
     platformName: string;
     url: string;
+    title: string;
     hotValue: number;
   }>;
 }
@@ -250,6 +251,7 @@ export async function crawlAndPersist(): Promise<{
           platform: item.platform,
           platformName: platformInfo.name,
           url: item.url,
+          title: item.title,
           hotValue: item.hotValue,
         });
         if (item.hotValue > existing.hotValue) {
@@ -274,6 +276,7 @@ export async function crawlAndPersist(): Promise<{
               platform: item.platform,
               platformName: platformInfo.name,
               url: item.url,
+              title: item.title,
               hotValue: item.hotValue,
             },
           ],
@@ -326,6 +329,7 @@ export async function crawlAndPersist(): Promise<{
           platform: s.platform,
           platform_name: s.platformName,
           url: s.url,
+          title: s.title,
           hot_value: s.hotValue,
           raw_rank: i + 1,
         })),

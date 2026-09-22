@@ -77,18 +77,23 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_trend_event_time ON trend_samples(event_id, sample_at);
 `);
 
-// ---------- 轻量迁移：为旧库补充 AI 扩充字段 ----------
+// ---------- 轻量迁移：为旧库补充字段 ----------
+
+function ensureColumn(table: string, column: string, ddl: string): void {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
+  if (!columns.some((c) => c.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${ddl}`);
+  }
+}
 
 function ensureEventsColumn(column: string, ddl: string): void {
-  const columns = db.prepare('PRAGMA table_info(events)').all() as Array<{ name: string }>;
-  if (!columns.some((c) => c.name === column)) {
-    db.exec(`ALTER TABLE events ADD COLUMN ${ddl}`);
-  }
+  ensureColumn('events', column, ddl);
 }
 
 ensureEventsColumn('ai_detail', 'ai_detail TEXT');
 ensureEventsColumn('ai_verified', 'ai_verified INTEGER NOT NULL DEFAULT 0');
 ensureEventsColumn('ai_generated_at', 'ai_generated_at TEXT');
+ensureColumn('sources', 'title', 'title TEXT');
 
 // ---------- 行类型 ----------
 
@@ -111,6 +116,7 @@ export interface SourceRow {
   platform: string;
   platform_name: string;
   url: string;
+  title: string | null;
   hot_value: number;
   raw_rank: number;
 }
@@ -164,7 +170,7 @@ export function getEvent(eventId: string): EventRow | undefined {
 }
 
 const stmtListSources = db.prepare(`
-  SELECT platform, platform_name, url, hot_value, raw_rank
+  SELECT platform, platform_name, url, title, hot_value, raw_rank
   FROM sources WHERE event_id = ? ORDER BY raw_rank ASC
 `);
 
@@ -174,14 +180,14 @@ export function listSources(eventId: string): SourceRow[] {
 
 const stmtDeleteSources = db.prepare('DELETE FROM sources WHERE event_id = ?');
 const stmtInsertSource = db.prepare(`
-  INSERT INTO sources (event_id, platform, platform_name, url, hot_value, raw_rank, created_at)
-  VALUES (?, ?, ?, ?, ?, ?, ?)
+  INSERT INTO sources (event_id, platform, platform_name, url, title, hot_value, raw_rank, created_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
 export function replaceSources(eventId: string, sources: SourceRow[], now: string): void {
   stmtDeleteSources.run(eventId);
   for (const s of sources) {
-    stmtInsertSource.run(eventId, s.platform, s.platform_name, s.url, s.hot_value, s.raw_rank, now);
+    stmtInsertSource.run(eventId, s.platform, s.platform_name, s.url, s.title ?? null, s.hot_value, s.raw_rank, now);
   }
 }
 

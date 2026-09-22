@@ -171,6 +171,7 @@ hotRouter.get('/:id', async (req, res) => {
       sources: sources.map((s) => ({
         platform: s.platform,
         platformName: s.platform_name,
+        title: s.title,
         url: s.url,
         hotValue: s.hot_value,
       })),

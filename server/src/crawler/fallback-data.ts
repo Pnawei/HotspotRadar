@@ -171,6 +171,7 @@ export function generateFallbackData(): HotItem[] {
         platform: p,
         platformName: platformNames[p],
         url: `https://s.weibo.com/weibo?q=${encodeURIComponent(topic.title)}`,
+        title: topic.title,
         hotValue: generateHotValue(topic.base * (0.5 + Math.random() * 0.5)),
       })),
     };
